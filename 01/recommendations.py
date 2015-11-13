@@ -16,7 +16,8 @@ critics={'Lisa Rose': {'Lady in the Water': 2.5, 'Snakes on a Plane': 3.5,
   'You, Me and Dupree': 2.0},
  'Jack Matthews': {'Lady in the Water': 3.0, 'Snakes on a Plane': 4.0,
   'The Night Listener': 3.0, 'Superman Returns': 5.0, 'You, Me and Dupree': 3.5},
- 'Toby': {'Snakes on a Plane':4.5, 'You, Me and Dupree':1.0,'Superman Returns':4.0}}
+ 'Toby': {'Snakes on a Plane':4.5, 'You, Me and Dupree':1.0,'Superman Returns':4.0},
+ 'Wilbur': {'Hello World':5.0}}
  
 from math import sqrt
  
@@ -36,3 +37,36 @@ def sim_distance(prefs,person1,person2):
                         for item in prefs[person1] if item in prefs[person2]])
     
     return 1/(1+sqrt(sum_of_squares))
+
+# 返回p1和p2的皮尔逊相关系数
+def sim_pearson(prefs,p1,p2):
+    # 得到双方都曾评价过的物品列表
+    si={}
+    for item in prefs[p1]:
+        if item in prefs[p2]: si[item]=p1
+    
+    # 得到列表元素的个数
+    n=len(si)
+    
+    # 如果两者没有共同之处，则返回0
+    if n==0: return 0
+    
+    # 对所有偏好求和
+    sum1=sum([prefs[p1][it] for it in si])
+    sum2=sum([prefs[p2][it] for it in si])
+    
+    # 求平方和
+    sum1Sq=sum([pow(prefs[p1][it],2) for it in si])
+    sum2Sq=sum([pow(prefs[p2][it],2) for it in si])
+    
+    # 求乘积之和
+    pSum=sum([prefs[p1][it]*prefs[p2][it] for it in si])
+    
+    # 计算皮尔逊评价差值
+    num=pSum-(sum1*sum2/n)
+    den=sqrt((sum1Sq-pow(sum1,2)/n)*(sum2Sq-pow(sum2,2)/n))
+    if den==0: return 0
+    
+    r=num/den
+    
+    return r
